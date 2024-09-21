@@ -40,54 +40,69 @@ public class PurchaseServiceImp implements PurchaseService {
     @Transactional
     public PurchaseDetailDTO createPurchase(PurchaseCreationDTO purchase) {
         if (purchase.getArticles().isEmpty()) {
-            System.out.println("Se requiere al menos un artículo en la compra");
+            System.out.println("Purchase cannot be empty");
             return null;
         }
 
         List<PurchaseCreationArticleDTO> validArticles = new ArrayList<>();
         Long totalPurchasePrice = 0L;
+
+        // Validate articles and calculate the total purchase price
         for (PurchaseCreationArticleDTO article : purchase.getArticles()) {
             if (!articleRepository.existsById(article.getArticleId()) || article.getArticleQuantity() < 1) {
                 continue;
             }
-            // Add price to the total value of the purchase
+
+            // Retrieve the article from the repository
             Article foundArticle = articleRepository.getArticleById(article.getArticleId());
+
             // Validate if the item belongs to the selected provider
             if (foundArticle.getProviderId() != purchase.getProviderId()) {
                 continue;
             }
-            // Add valid id
+
+            // Add valid article to the list
             validArticles.add(article);
 
+            // Add price to the total value of the purchase
             totalPurchasePrice += foundArticle.getPurchasePrice() * article.getArticleQuantity();
         }
 
         if (validArticles.isEmpty()) {
-            System.out.println("Ningún artículo existente");
+            System.out.println("No valid articles found");
             return null;
         }
 
-        Long newPurchaseId = purchaseRepository.createPurchase(
-                totalPurchasePrice,
-                purchase.getProviderId(),
-                purchase.getSessionUserId()
-        );
+        // Create and save the Purchase entity
+        Purchase purchaseEntity = new Purchase();
+        purchaseEntity.setProviderId(purchase.getProviderId());
+        purchaseEntity.setUserId(purchase.getSessionUserId());
+        purchaseEntity.setTotalValue(totalPurchasePrice.intValue());
 
+        // Save the purchase and get the generated ID
+        Purchase savedPurchase = purchaseRepository.save(purchaseEntity);
+        Long newPurchaseId = savedPurchase.getPurchaseId();
+
+        // Handle purchase details
         for (PurchaseCreationArticleDTO article : validArticles) {
             Article foundArticle = articleRepository.getArticleById(article.getArticleId());
             Long totalValue = (long) (foundArticle.getPurchasePrice() * article.getArticleQuantity());
-            // Create article detail
+
+            // Create and save purchase detail
             purchaseDetailRepository.createPurchaseDetail(
                     newPurchaseId,
                     foundArticle.getArticleId(),
                     article.getArticleQuantity(),
                     totalValue
             );
+
             // Update article stock
             Integer stock = foundArticle.getStock() + article.getArticleQuantity();
             foundArticle.setStock(stock);
             articleRepository.save(foundArticle);
         }
+
+        // Return the created purchase details
         return getPurchaseById(newPurchaseId);
     }
 
@@ -95,14 +110,13 @@ public class PurchaseServiceImp implements PurchaseService {
     @Transactional
     public PurchasesPageDTO getAllPurchases(String criteria, Integer page, Integer pageSize) {
         PurchasesPageDTO pagedPurchasesResponse = new PurchasesPageDTO();
-
         Page<Purchase> purchasePage;
 
-        if (criteria == null || criteria.length() == 0) {
+        if (criteria == null || criteria.isEmpty()) {
             Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("purchaseId").descending());
             purchasePage = purchaseRepository.findAll(pageable);
         } else {
-            Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("purchase_id").descending()); // purchase_id because it is a native query
+            Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("purchase_id").descending()); // purchase_id because it's a native query
             purchasePage = purchaseRepository.findAllPurchases(criteria, pageable);
         }
 
@@ -114,6 +128,7 @@ public class PurchaseServiceImp implements PurchaseService {
         pagedPurchasesResponse.setPageSize(purchasePage.getSize());
         pagedPurchasesResponse.setTotalRecords(purchasePage.getTotalElements());
         pagedPurchasesResponse.setTotalPages(purchasePage.getTotalPages());
+
         if (pagedPurchasesResponse.getTotalPages() == 0) {
             pagedPurchasesResponse.setTotalPages(1);
         }

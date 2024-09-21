@@ -38,7 +38,7 @@ public class Article {
     @Column(name = "weight")
     private String weight;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

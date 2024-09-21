@@ -85,7 +85,7 @@ public class ProviderServiceImp implements ProviderService {
 
         if (!providerData.getEmail().equalsIgnoreCase(foundProvider.getEmail()) &&
             providerRepository.findByEmail(providerData.getEmail()) != null) {
-            System.out.println("El correo no está disponible");
+            System.out.println("provider not found");
             return null;
         }
 

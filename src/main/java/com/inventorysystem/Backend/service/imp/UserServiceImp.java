@@ -104,11 +104,11 @@ public class UserServiceImp implements UserService {
 
         if (!userData.getUsername().equalsIgnoreCase(foundUser.getUsername()) &&
                 userRepository.findByUsername(userData.getUsername()) != null) {
-            System.out.println("El nombre de usuario no está disponible");
+            System.out.println("user not found");
             return null;
         } else if (!userData.getEmail().equalsIgnoreCase(foundUser.getEmail()) &&
                 userRepository.findByEmail(userData.getEmail()) != null) {
-            System.out.println("El correo no está disponible");
+            System.out.println("id not not");
             return null;
         }
 

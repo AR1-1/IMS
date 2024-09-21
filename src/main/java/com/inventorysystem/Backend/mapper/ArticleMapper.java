@@ -12,22 +12,27 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ArticleMapper {
-    @Autowired
-    ModelMapper modelMapper;
 
     @Autowired
-    ProviderRepository providerRepository;
+    private ModelMapper modelMapper;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private ProviderRepository providerRepository;
 
     @Autowired
-    ProviderMapper providerMapper;
+    private CategoryRepository categoryRepository;
 
     @Autowired
-    CategoryMapper categoryMapper;
+    private ProviderMapper providerMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
     public ArticleDTO articleToDTO(Article article) {
+        if (article == null) {
+            return null; // Handle null article
+        }
+
         ArticleDTO convertedArticle = modelMapper.map(article, ArticleDTO.class);
 
         Provider foundProvider = providerRepository.getProviderById(article.getProviderId());

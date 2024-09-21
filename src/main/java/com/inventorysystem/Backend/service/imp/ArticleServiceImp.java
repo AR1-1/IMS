@@ -95,8 +95,8 @@ public class ArticleServiceImp implements ArticleService {
         Article foundArticle = articleRepository.getArticleById(articleId);
 
         if (!articleData.getName().equalsIgnoreCase(foundArticle.getName()) &&
-            articleRepository.findByName(articleData.getName()) != null) {
-            System.out.println("El nombre no está disponible");
+                articleRepository.findByName(articleData.getName()) != null) {
+            System.out.println("No articles found");
             return null;
         }
 

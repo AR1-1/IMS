@@ -40,9 +40,11 @@ public class SaleServiceImp implements SaleService {
     @Transactional
     public SaleDetailDTO createSale(SaleCreationDTO sale) {
         if (sale.getArticles().isEmpty()) {
-            System.out.println("Se requiere al menos un artículo en la venta");
+            System.out.println("Sale is empty");
             return null;
         }
+
+
 
         List<SaleCreationArticleDTO> validArticles = new ArrayList<>();
         Long totalSalePrice = 0L;
@@ -58,20 +60,34 @@ public class SaleServiceImp implements SaleService {
         }
 
         if (validArticles.isEmpty()) {
-            System.out.println("Ningún artículo existente");
+            System.out.println("articles is empty");
             return null;
         }
 
-        Long newSaleId = saleRepository.createSale(
-                totalSalePrice,
-                sale.getCustomerId(),
-                sale.getSessionUserId()
-        );
+//        Long newSaleId = saleRepository.createSale(
+//                totalSalePrice,
+//                sale.getCustomerId(),
+//                sale.getSessionUserId()
+//        );
+
+        Sale sale2 = new Sale();
+
+        sale2.setCustomerId(sale.getCustomerId());
+        sale2.setUserId(sale.getSessionUserId());
+        sale2.setTotalValue(totalSalePrice.intValue());
+
+      //  sale2.totalSalePrice();
+       // sale2.getCustomerId();
+      //  sale2.getSessionUserID();
+        Sale resSale = saleRepository.save(sale2);
+      Long  newSaleId = resSale.getSaleId();
 
         for (SaleCreationArticleDTO article : validArticles) {
             Article foundArticle = articleRepository.getArticleById(article.getArticleId());
             Long totalValue = (long) (foundArticle.getSalePrice() * article.getArticleQuantity());
             // Create article detail
+
+
             saleDetailRepository.createSaleDetail(
                     newSaleId,
                     foundArticle.getArticleId(),
@@ -129,4 +145,7 @@ public class SaleServiceImp implements SaleService {
         List<SaleDetail> foundSaleDetails = saleDetailRepository.getAllSaleDetails(id);
         return saleMapper.saleDetailToDTO(foundSale, foundSaleDetails);
     }
+
+
+
 }

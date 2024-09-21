@@ -35,5 +35,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Procedure(procedureName = "Proc_delete_category")
     void deleteCategory(@Param("Ip_category_id") Long categoryId);
 
-    Page<Category> findAll(Specification<Category> categorySpecification, Pageable pageable);
+  Page<Category> findAll(Specification<Category> categorySpecification, Pageable pageable);
+
+  //  Page<Category> findByUserId(Long userId, Pageable pageable);
+
 }

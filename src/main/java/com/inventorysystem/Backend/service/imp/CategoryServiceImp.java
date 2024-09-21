@@ -32,9 +32,7 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     @Transactional
     public CategoryDTO createCategory(CategoryCreationDTO category) {
-        Long newCategoryId = categoryRepository.createCategory(
-                category.getName()
-        );
+        Long newCategoryId = categoryRepository.createCategory(category.getName());
         return getCategoryById(newCategoryId);
     }
 
@@ -82,8 +80,8 @@ public class CategoryServiceImp implements CategoryService {
         Category foundCategory = categoryRepository.getCategoryById(categoryId);
 
         if (!categoryData.getName().equalsIgnoreCase(foundCategory.getName()) &&
-            categoryRepository.findByName(categoryData.getName()) != null) {
-            System.out.println("El nombre no está disponible");
+                categoryRepository.findByName(categoryData.getName()) != null) {
+            System.out.println("category  found");
             return null;
         }
 
@@ -97,4 +95,21 @@ public class CategoryServiceImp implements CategoryService {
         // Call class method for get by category id
         return getCategoryById(foundCategory.getCategoryId());
     }
-}
+
+
+
+    // New delete method
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        // Check if the category exists
+        Category foundCategory = categoryRepository.getCategoryById(categoryId);
+        if (foundCategory != null) {
+            categoryRepository.deleteCategory(categoryId);
+        } else {
+            throw new IllegalArgumentException("Category not found with ID: " + categoryId);
+        }
+    }
+
+    }
+

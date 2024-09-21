@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Getter @Setter @AllArgsConstructor @NoArgsConstructor
 @Table(name = "sale")
 public class Sale {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "sale_id")
@@ -23,7 +24,7 @@ public class Sale {
     @Column(name = "total_value")
     private Integer totalValue;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

@@ -14,4 +14,6 @@ public interface ArticleService {
     ArticleDTO getArticleById(Long id);
 
     ArticleDTO updateArticle(Long articleId, ArticleUpdateDTO articleData);
+
+
 }

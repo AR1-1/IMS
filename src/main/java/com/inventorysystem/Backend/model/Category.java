@@ -23,13 +23,13 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "created_at")
+    @Column(name = "createdAt")
     @CreationTimestamp
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 }

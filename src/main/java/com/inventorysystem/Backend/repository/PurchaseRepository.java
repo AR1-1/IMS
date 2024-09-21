@@ -45,24 +45,24 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     // Data summary queries
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM purchase " +
-        "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")
+        "WHERE createdAt >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")
     Long getTotalPurchasesInLastWeek();
     @Query(nativeQuery = true, value = "SELECT SUM(total_value) FROM purchase " +
-            "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")
+            "WHERE createdAt >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)")
     Long getPurchaseMoneyInLastWeek();
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM purchase " +
-            "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")
+            "WHERE createdAt >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")
     Long getTotalPurchasesInLastMonth();
     @Query(nativeQuery = true, value = "SELECT SUM(total_value) FROM purchase " +
-            "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")
+            "WHERE createdAt >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)")
     Long getPurchaseMoneyInLastMonth();
 
     @Query(nativeQuery = true, value = "SELECT COUNT(*) FROM purchase " +
-            "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)")
+            "WHERE createdAt>= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)")
     Long getTotalPurchasesInLastYear();
 
     @Query(nativeQuery = true, value = "SELECT SUM(total_value) FROM purchase " +
-            "WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)")
+            "WHERE createdAt >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)")
     Long getPurchaseMoneyInLastYear();
 }

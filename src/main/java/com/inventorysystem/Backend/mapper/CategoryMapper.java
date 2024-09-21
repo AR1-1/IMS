@@ -8,10 +8,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CategoryMapper {
+
+    private final ModelMapper modelMapper;
+
     @Autowired
-    ModelMapper modelMapper;
+    public CategoryMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     public CategoryDTO categoryToDTO(Category category) {
+        if (category == null) {
+            return null; // Handle null category
+        }
         return modelMapper.map(category, CategoryDTO.class);
     }
 }

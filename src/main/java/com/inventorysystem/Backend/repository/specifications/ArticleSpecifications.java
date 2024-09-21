@@ -12,4 +12,16 @@ public class ArticleSpecifications {
                 criteriaBuilder.like(criteriaBuilder.lower(root.get("brand")), "%" + searchTerm.toLowerCase() + "%")
         );
     }
+
+
+
+    // Collaborative filtering: Find similar articles based on item features
+    public static Specification<Article> similarArticles(Article currentArticle) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.or(
+                // Example similarity criteria: same brand or similar name
+                criteriaBuilder.equal(root.get("brand"), currentArticle.getBrand()),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + currentArticle.getName().toLowerCase() + "%")
+        );
+    }
+
 }
