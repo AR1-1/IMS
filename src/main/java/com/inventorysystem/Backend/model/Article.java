@@ -53,4 +53,8 @@ public class Article {
 
     @Column(name = "category_id")
     private Long categoryId;
+
+    @Column(name = "stock_count")
+    private Integer stockCount;
+
 }

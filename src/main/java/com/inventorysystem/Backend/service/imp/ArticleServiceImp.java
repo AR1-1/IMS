@@ -6,8 +6,10 @@ import com.inventorysystem.Backend.dto.article.ArticleUpdateDTO;
 import com.inventorysystem.Backend.dto.article.ArticlesPageDTO;
 import com.inventorysystem.Backend.mapper.ArticleMapper;
 import com.inventorysystem.Backend.model.Article;
+import com.inventorysystem.Backend.model.Notification;
 import com.inventorysystem.Backend.repository.ArticleRepository;
 import com.inventorysystem.Backend.repository.specifications.ArticleSpecifications;
+import com.inventorysystem.Backend.repository.NotificationRepository;
 import com.inventorysystem.Backend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,10 +26,13 @@ import java.util.stream.Collectors;
 public class ArticleServiceImp implements ArticleService {
 
     @Autowired
-    ArticleRepository articleRepository;
+    private ArticleRepository articleRepository;
 
     @Autowired
-    ArticleMapper articleMapper;
+    private ArticleMapper articleMapper;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Override
     @Transactional
@@ -109,6 +114,7 @@ public class ArticleServiceImp implements ArticleService {
         foundArticle.setProviderId(articleData.getProviderId());
         foundArticle.setCategoryId(articleData.getCategoryId());
 
+        // Update the article
         articleRepository.updateArticle(
                 foundArticle.getArticleId(),
                 foundArticle.getName(),
@@ -121,7 +127,15 @@ public class ArticleServiceImp implements ArticleService {
                 foundArticle.getCategoryId()
         );
 
-        // Call class method for get by article id
+//        // Check if stock is low and trigger notification
+//        if (foundArticle.getStock() <= 5) {
+//            Notification notification = new Notification();
+//            notification.setMessage("Article '" + foundArticle.getName() + "' (ID: " + articleId + ") is low on stock.");
+//            notification.setArticleId(articleId);
+//            notification.setRead(false);
+//            notificationRepository.save(notification);
+//        }
+
         return getArticleById(foundArticle.getArticleId());
     }
 }

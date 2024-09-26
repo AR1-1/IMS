@@ -1,6 +1,7 @@
 package com.inventorysystem.Backend.repository;
 
 import com.inventorysystem.Backend.model.Article;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -63,4 +64,13 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     @Query("SELECT SUM(stock) FROM Article article")
     Long getTotalStock();
+
+
+
+// @Query(nativeQuery = true, value = "SELECT * FROM article WHERE provider_id = :providerId")
+//    Page<Article> findAllArticlesByProvider(@Param("providerId") Long providerId, Pageable pageable);
+    @Query(value = "FROM Article WHERE stock <= :id" )
+    List<Article>findArticlesByStockThreshold(@Param("id") Integer id );
+
+
 }

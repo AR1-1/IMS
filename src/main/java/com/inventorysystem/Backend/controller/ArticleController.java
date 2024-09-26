@@ -20,8 +20,14 @@ public class ArticleController {
 
     @PostMapping
     ResponseEntity<ArticleDTO> createArticle(@RequestBody ArticleCreationDTO article) {
-        ArticleDTO createdArticle = articleService.createArticle(article);
-        return ResponseEntity.status(HttpStatus.OK).body(createdArticle);
+        try {
+            ArticleDTO createdArticle = articleService.createArticle(article);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdArticle);
+        } catch (Exception e) {
+            // Log the exception (you might want to use a logger in a real app)
+            System.err.println("Error creating article: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping
@@ -31,17 +37,37 @@ public class ArticleController {
             @RequestParam(name = "page") Integer page,
             @RequestParam(name = "pageSize") Integer pageSize
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.getAllArticles(providerId, criteria, page, pageSize));
+        try {
+            ArticlesPageDTO articlesPage = articleService.getAllArticles(providerId, criteria, page, pageSize);
+            return ResponseEntity.status(HttpStatus.OK).body(articlesPage);
+        } catch (Exception e) {
+            // Log the exception
+            System.err.println("Error fetching articles: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{id}")
     ResponseEntity<ArticleDTO> getArticleById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(articleService.getArticleById(id));
+        try {
+            ArticleDTO article = articleService.getArticleById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(article);
+        } catch (Exception e) {
+            // Log the exception
+            System.err.println("Error fetching article by id: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/{id}")
     ResponseEntity<ArticleDTO> updateArticle(@PathVariable Long id, @RequestBody ArticleUpdateDTO articleData) {
-        ArticleDTO updatedArticle = articleService.updateArticle(id, articleData);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedArticle);
+        try {
+            ArticleDTO updatedArticle = articleService.updateArticle(id, articleData);
+            return ResponseEntity.status(HttpStatus.OK).body(updatedArticle);
+        } catch (Exception e) {
+            // Log the exception
+            System.err.println("Error updating article: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
